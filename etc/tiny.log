@@ -1,2 +1,2 @@
-127.0.0.1 peter [09/02/2018:10:34:12] "GET /sample-image.png HTTP/2"
-127.0.0.1 - [09/02/2018:10:34:12] "GET /sample-image.png HTTP/2" 
+127.0.0.1 peter [09/Feb/2018:10:34:12] "GET /sample-image.png HTTP/2"
+127.0.0.1 - [09/Jun/2018:10:34:12] "GET /sample-image.png HTTP/2" 

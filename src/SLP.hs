@@ -17,6 +17,9 @@ import           Control.Applicative
 
 -- | Type for IPs.
 data IP        = IP Word8 Word8 Word8 Word8 deriving (Show, Eq)
+-- | Type for months
+data Month = Jan | Feb | Mar | Apr | May | Jun | Jul
+           | Aug | Sep | Oct | Nov | Dec deriving (Enum, Show, Read, Eq)
 -- | Type for User IDs.
 data UserEntry = NoUser | User String deriving (Show, Eq)
 -- | Type alias for requests.
@@ -63,7 +66,7 @@ parseTime = do
   char '['
   d  <- count 2 digit
   char '/'
-  mm <- count 2 digit
+  mm <- fmap monthIndex $ some $ noneOf "/"
   char '/'
   y  <- count 4 digit
   char ':'
@@ -75,9 +78,12 @@ parseTime = do
   many $ noneOf "]"
   char ']'
   return 
-    LocalTime { localDay = fromGregorian (read y) (read mm) (read d)
+    LocalTime { localDay = fromGregorian (read y) mm (read d)
               , localTimeOfDay = TimeOfDay (read h) (read m) (read s)
                 }
+    where monthIndex :: String -> Int
+          monthIndex str = 1 + (fromEnum ((read str)::Month))
+
 
 -- | Parser of values of type 'Request'.
 parseRequest :: Parser Request
