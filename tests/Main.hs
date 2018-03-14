@@ -24,10 +24,13 @@ entry = LogEntry {
 
 testTinyLog :: Test
 testTinyLog = TestCase $ do
-  let res = eitherResult $ parse logParser "etc/tiny.log"
-  case res of
-    (Left e)  -> assertFailure $ "Parse failed: " ++ show e
-    (Right r) -> assertEqual "Is what it is" r [entry]
+  res <- parseFromFile "etc/tiny.log"
+  assertEqual "Is what it is" res [entry]
+
+testLog :: Test
+testLog = TestCase $ do
+  res <- parseFromFile "etc/tiny.log"
+  assertEqual "I can't believe I ate the whole thing'" 1546 (length res)
 
 tests :: Test
 tests = TestList [TestLabel "Test tiny.log" testTinyLog]
