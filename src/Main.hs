@@ -13,4 +13,3 @@ main = do args <- getArgs
           if length args /= 1 then putStrLn usage
           else do contents <- BC.readFile (head args) 
                   print $ parseOnly logParser contents
-

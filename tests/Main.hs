@@ -29,8 +29,16 @@ testTinyLog = TestCase $ do
     (Left e)  -> assertFailure $ "Parse failed: " ++ show e
     (Right r) -> assertEqual "Is what it is" r [entry]
 
+testLog :: Test
+testLog = TestCase $ do
+  let res = eitherResult $ parse logParser "etc/access.log"
+  case res of
+    (Left e)  -> assertFailure $ "Parse failed: " ++ show e
+    (Right r) -> assertEqual "Is what it is" 1546 (length r)
 tests :: Test
-tests = TestList [TestLabel "Test tiny.log" testTinyLog]
+tests = TestList [TestLabel "Test tiny.log" testTinyLog
+                 , TestLabel "Test access.log" testLog
+                 ]
 
 main :: IO ()
 main = do _ <- runTestTT tests

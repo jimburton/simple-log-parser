@@ -1,15 +1,14 @@
 # simple-log-parser
-A demo of using AttoParsec to parse Apache access logs, based on the example at 
-https://www.schoolofhaskell.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec
 
-Logs are expected to be in the following format:
+A demo of using AttoParsec to parse Apache access logs. Logs are
+expected to be in the following format:
 
     %h %u %t \"%r\"
 
 Yielding log entries that look like this:
 
-    127.0.0.1 peter [09/02/2018:10:34:12] \"GET /sample-image.png HTTP/2\"" 
-	55.0.123.1 - [09/02/2018:12:34:12] \"POST /index.php?key=value HTTP/1.1\"" 
+    127.0.0.1 peter [09/Feb/2018:10:34:12] \"GET /sample-image.png HTTP/2\"" 
+	55.0.123.1 - [09/Jun/2018:12:34:12] \"POST /index.php?key=value HTTP/1.1\"" 
 
 The elements of a log entry:
 
@@ -56,3 +55,7 @@ parser for each type of information.
 Note that, like the user ID, the client identity is *either* a hyphen or a string
 identifying the client. The status code is an integral number. The size is
 either a hyphen or an integral number.
+
+There is a `HUnit` test in `tests/Main.hs` that tries to parse the log file
+`etc/access.log`, which is in common format. The test should begin to pass once 
+your new parser is working. 
