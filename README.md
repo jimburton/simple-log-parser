@@ -25,8 +25,14 @@ Usual rigmarole:
 	$ cd simple-log-parser
 	$ cabal sandbox init
 	$ cabal configure
-	$ cabal install
+	$ cabal install --enable-dependencies
 	$ cabal test
+	
+The main method expects one argument which is the path to a log file:
+
+    $ cabal run -- etc/tiny.log
+	Running slp...
+    Right [LogEntry {entryIP = IP 127 0 0 1, entryUser = User "peter", entryTime = 2018-02-09 10:34:12, entryReq = "GET /sample-image.png HTTP/2"}]
 	
 ## Extension
 
