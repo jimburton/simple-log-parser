@@ -3,9 +3,6 @@ module Main where
 
 import Test.HUnit 
 import Data.Time
-import Data.Attoparsec.ByteString.Char8
---import Data.ByteString.Internal.ByteString
---import qualified Data.ByteString.Lazy.Char8 as LB
 import SLP
 
 theTime :: LocalTime
@@ -16,12 +13,15 @@ theTime = LocalTime {
           
 entry :: LogEntry
 entry = LogEntry {
-  entryIP     = IP 127 0 0 1
-  , entryUser = User "peter"
-  , entryTime = theTime
-  , entryReq  = "GET /sample-image.png HTTP/2"
+  entryIP       = IP 127 0 0 1
+  , entryClient = NoClient
+  , entryUser   = User "peter" 
+  , entryTime   = theTime
+  , entryReq    = "GET /sample-image.png HTTP/2"
+  , entryStatus = Status 200
+  , entrySize   = ResponseSize 123456
   }
-
+  
 testTinyLog :: Test
 testTinyLog = TestCase $ do
   res <- parseFromFile "etc/tiny.log"
@@ -33,7 +33,9 @@ testLog = TestCase $ do
   assertEqual "I can't believe I ate the whole thing'" 1546 (length res)
 
 tests :: Test
-tests = TestList [TestLabel "Test tiny.log" testTinyLog]
+tests = TestList [TestLabel "Test tiny.log" testTinyLog
+                 , TestLabel "Test access.log" testLog
+                 ]
 
 main :: IO ()
 main = do _ <- runTestTT tests
