@@ -15,23 +15,29 @@ import           Data.String.ToString
 import           Data.Attoparsec.ByteString.Char8
 import           Control.Applicative
 
--- | Type for IP's.
+-- | Type for IPs.
 data IP        = IP Word8 Word8 Word8 Word8 deriving (Show, Eq)
+-- | Type for User IDs.
 data UserEntry = NoUser | User String deriving (Show, Eq)
+-- | Type alias for requests.
 type Request   = String
-
+-- | Type for log entries.
 data LogEntry =
   LogEntry { entryIP   :: IP
            , entryUser :: UserEntry 
            , entryTime :: LocalTime
            , entryReq  :: Request
              } deriving (Show, Eq)
-
+-- | Type for an entire log.
 type Log = [LogEntry]
 
 -----------------------
 ------- PARSING -------
 -----------------------
+
+-- | Helper function.
+noneOf :: String -> Parser Char
+noneOf cs = satisfy (`notElem` cs)
 
 -- | Parser of values of type 'IP'.
 parseIP :: Parser IP
@@ -45,6 +51,7 @@ parseIP = do
   d4 <- decimal
   return $ IP d1 d2 d3 d4
 
+-- | Parser of values of type `UserEntry'.
 parseUser :: Parser UserEntry
 parseUser =
          (char '-' >> return NoUser)
@@ -65,22 +72,22 @@ parseTime = do
   m  <- count 2 digit
   char ':'
   s  <- count 2 digit
+  many $ noneOf "]"
   char ']'
   return 
     LocalTime { localDay = fromGregorian (read y) (read mm) (read d)
               , localTimeOfDay = TimeOfDay (read h) (read m) (read s)
                 }
 
-parseRequest :: Parser String
+-- | Parser of values of type 'Request'.
+parseRequest :: Parser Request
 parseRequest = do
   char '"'
   req <- many $ noneOf "\""
   char '"'
   return req
-  where noneOf :: String -> Parser Char
-        noneOf cs = satisfy (`notElem` cs)
   
--- | Parser of log entries.
+-- | Parser of individual log entries.
 logEntryParser :: Parser LogEntry
 logEntryParser = do
   i <- parseIP
@@ -92,5 +99,6 @@ logEntryParser = do
   r <- parseRequest
   return $ LogEntry i u t r 
 
+-- | Parser of an entire log.
 logParser :: Parser Log
 logParser = many $ logEntryParser <* endOfLine

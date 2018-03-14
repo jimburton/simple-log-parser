@@ -26,7 +26,7 @@ executable slp
                      , bytestring
                      , attoparsec
   hs-source-dirs:      src
-  Ghc-Options:         -Wall
+--  Ghc-Options:         -Wall
   default-language:    Haskell2010
 
 Test-Suite test-slp
