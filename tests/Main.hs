@@ -3,9 +3,6 @@ module Main where
 
 import Test.HUnit 
 import Data.Time
-import Data.Attoparsec.ByteString.Char8
---import Data.ByteString.Internal.ByteString
---import qualified Data.ByteString.Lazy.Char8 as LB
 import SLP
 
 theTime :: LocalTime
@@ -24,21 +21,21 @@ entry = LogEntry {
 
 testTinyLog :: Test
 testTinyLog = TestCase $ do
-  let res = eitherResult $ parse logParser "etc/tiny.log"
-  case res of
-    (Left e)  -> assertFailure $ "Parse failed: " ++ show e
-    (Right r) -> assertEqual "Is what it is" r [entry]
+  res <- parseFromFile "etc/tiny.log"
+  assertEqual "Is what it is" res [entry]
 
-testLog :: Test
+{-testLog :: Test
 testLog = TestCase $ do
-  let res = eitherResult $ parse logParser "etc/access.log"
+  let res = eitherResult $ parseOnly logParser "etc/access.log"
   case res of
     (Left e)  -> assertFailure $ "Parse failed: " ++ show e
     (Right r) -> assertEqual "Is what it is" 1546 (length r)
+-}
 tests :: Test
-tests = TestList [TestLabel "Test tiny.log" testTinyLog
+tests = TestList [TestLabel "Test tiny.log" testTinyLog]
+{-tests = TestList [TestLabel "Test tiny.log" testTinyLog
                  , TestLabel "Test access.log" testLog
-                 ]
+                 ] -}
 
 main :: IO ()
 main = do _ <- runTestTT tests

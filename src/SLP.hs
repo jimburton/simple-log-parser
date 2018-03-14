@@ -14,6 +14,7 @@ import           Data.Time             hiding (parseTime)
 import           Data.String.ToString
 import           Data.Attoparsec.ByteString.Char8
 import           Control.Applicative
+import qualified Data.ByteString.Char8 as BC
 
 -- | Type for IPs.
 data IP        = IP Word8 Word8 Word8 Word8 deriving (Show, Eq)
@@ -108,3 +109,12 @@ logEntryParser = do
 -- | Parser of an entire log.
 logParser :: Parser Log
 logParser = many $ logEntryParser <* endOfLine
+
+-- | Parse a log file given the path
+parseFromFile :: FilePath -> IO Log
+parseFromFile f = do
+  contents <- BC.readFile f 
+  let res = parseOnly logParser contents
+  case res of
+    (Left _)  -> return []
+    (Right r) -> return r
