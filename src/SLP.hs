@@ -17,17 +17,29 @@ import           Control.Applicative
 
 -- | Type for IPs.
 data IP        = IP Word8 Word8 Word8 Word8 deriving (Show, Eq)
+-- | Type for months
+data Month = Jan | Feb | Mar | Apr | May | Jun | Jul
+           | Aug | Sep | Oct | Nov | Dec deriving (Enum, Show, Read, Eq)
+-- | Type for User IDs.
+data ClientEntry = NoClient | Client String deriving (Show, Eq)
 -- | Type for User IDs.
 data UserEntry = NoUser | User String deriving (Show, Eq)
 -- | Type alias for requests.
 type Request   = String
+-- | Type for response status codes.
+data Status   = Status Int deriving (Show, Eq)
+-- | Type for response size.
+data Size   = NoSize | ResponseSize Int deriving (Show, Eq)
 -- | Type for log entries.
 data LogEntry =
-  LogEntry { entryIP   :: IP
-           , entryUser :: UserEntry 
-           , entryTime :: LocalTime
-           , entryReq  :: Request
-             } deriving (Show, Eq)
+  LogEntry { entryIP     :: IP
+           , entryClient :: ClientEntry
+           , entryUser   :: UserEntry 
+           , entryTime   :: LocalTime
+           , entryReq    :: Request
+           , entryStatus :: Status
+           , entrySize   :: Size
+           } deriving (Show, Eq)
 -- | Type for an entire log.
 type Log = [LogEntry]
 
@@ -52,6 +64,12 @@ parseIP = do
   return $ IP d1 d2 d3 d4
 
 -- | Parser of values of type `UserEntry'.
+parseClient :: Parser ClientEntry
+parseClient =
+         (char '-' >> return NoClient)
+     <|> (takeWhile (not . isSpace) >>= \u -> return $ Client $ toString u)
+
+-- | Parser of values of type `UserEntry'.
 parseUser :: Parser UserEntry
 parseUser =
          (char '-' >> return NoUser)
@@ -63,7 +81,7 @@ parseTime = do
   char '['
   d  <- count 2 digit
   char '/'
-  mm <- count 2 digit
+  mm <- fmap monthIndex $ some $ noneOf "/"
   char '/'
   y  <- count 4 digit
   char ':'
@@ -75,9 +93,11 @@ parseTime = do
   many $ noneOf "]"
   char ']'
   return 
-    LocalTime { localDay = fromGregorian (read y) (read mm) (read d)
+    LocalTime { localDay = fromGregorian (read y) mm (read d)
               , localTimeOfDay = TimeOfDay (read h) (read m) (read s)
                 }
+    where monthIndex :: String -> Int
+          monthIndex str = 1 + (fromEnum ((read str)::Month))
 
 -- | Parser of values of type 'Request'.
 parseRequest :: Parser Request
@@ -86,18 +106,34 @@ parseRequest = do
   req <- many $ noneOf "\""
   char '"'
   return req
-  
+
+-- | Parser of values of type 'Status'.
+parseStatus :: Parser Status
+parseStatus = decimal >>= return . Status
+
+-- | Parser of values of type `Size'.
+parseSize :: Parser Size
+parseSize =
+         (char '-' >> return NoSize)
+     <|> (decimal >>= \d -> return $ ResponseSize d)
+
 -- | Parser of individual log entries.
 logEntryParser :: Parser LogEntry
 logEntryParser = do
-  i <- parseIP
+  i  <- parseIP
   char ' '
-  u <- parseUser
+  c  <- parseClient
   char ' '
-  t <- parseTime
+  u  <- parseUser
   char ' '
-  r <- parseRequest
-  return $ LogEntry i u t r 
+  t  <- parseTime
+  char ' '
+  r  <- parseRequest
+  char ' '
+  st <- parseStatus
+  char ' '
+  si <- parseSize
+  return $ LogEntry i c u t r st si 
 
 -- | Parser of an entire log.
 logParser :: Parser Log
