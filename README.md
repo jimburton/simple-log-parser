@@ -56,7 +56,8 @@ The parts of the format that we haven't seen before:
 
 Extend the parser to support the Apache common format. You will need to 
 extend the `LogEntry` data type to include the new fields then write a
-parser for each type of information. 
+parser for each type of information. Then modify the `logEntryParser`
+function to construct the new fields.
 
 Note that, like the user ID, the client identity is *either* a hyphen or a string
 identifying the client. The status code is an integral number. The size is
