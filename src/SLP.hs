@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module SLP (logParser, logEntryParser) where
+module SLP where
 {-
 A parser for simple access log files in the format
 
@@ -14,11 +14,10 @@ import           Data.Time             hiding (parseTime)
 import           Data.String.ToString
 import           Data.Attoparsec.ByteString.Char8
 import           Control.Applicative
-import           System.Environment
 
 -- | Type for IP's.
-data IP        = IP Word8 Word8 Word8 Word8 deriving Show
-data UserEntry = NoUser | User String deriving Show
+data IP        = IP Word8 Word8 Word8 Word8 deriving (Show, Eq)
+data UserEntry = NoUser | User String deriving (Show, Eq)
 type Request   = String
 
 data LogEntry =
@@ -26,7 +25,7 @@ data LogEntry =
            , entryUser :: UserEntry 
            , entryTime :: LocalTime
            , entryReq  :: Request
-             } deriving Show
+             } deriving (Show, Eq)
 
 type Log = [LogEntry]
 
@@ -67,7 +66,7 @@ parseTime = do
   char ':'
   s  <- count 2 digit
   char ']'
-  return $
+  return 
     LocalTime { localDay = fromGregorian (read y) (read mm) (read d)
               , localTimeOfDay = TimeOfDay (read h) (read m) (read s)
                 }
@@ -75,11 +74,11 @@ parseTime = do
 parseRequest :: Parser String
 parseRequest = do
   char '"'
-  req <- (many $ noneOf "\"")
+  req <- many $ noneOf "\""
   char '"'
   return req
   where noneOf :: String -> Parser Char
-        noneOf cs = satisfy (\c -> not (elem c cs))
+        noneOf cs = satisfy (`notElem` cs)
   
 -- | Parser of log entries.
 logEntryParser :: Parser LogEntry

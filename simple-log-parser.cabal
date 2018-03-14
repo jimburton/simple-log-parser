@@ -26,4 +26,19 @@ executable slp
                      , bytestring
                      , attoparsec
   hs-source-dirs:      src
+  Ghc-Options:         -Wall
+  default-language:    Haskell2010
+
+Test-Suite test-slp
+  Type:                exitcode-stdio-1.0
+  Main-is:             Main.hs
+  other-extensions:    OverloadedStrings
+  hs-source-dirs:      tests, src
+  Ghc-Options:         -Wall
+  Build-depends:       base
+                     , HUnit
+                     , attoparsec
+                     , bytestring
+                     , time
+                     , tostring
   default-language:    Haskell2010

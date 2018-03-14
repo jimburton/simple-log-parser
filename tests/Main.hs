@@ -1,29 +1,38 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Test.Tasty (testGroup)
-import Data.List (isInfixOf)
-import qualified Data.ByteString.Lazy.Char8 as LB
+import Test.HUnit 
+import Data.Time
+import Data.Attoparsec.ByteString.Char8
+--import Data.ByteString.Internal.ByteString
+--import qualified Data.ByteString.Lazy.Char8 as LB
 import SLP
 
+theTime :: LocalTime
+theTime = LocalTime {
+  localDay = fromGregorian 2018 2 9
+  , localTimeOfDay = TimeOfDay 10 34 12
+  }
+          
 entry :: LogEntry
 entry = LogEntry {
-  entryIP = IP 127 0 0 1
-  , entryUser = UserEntry "peter"
+  entryIP     = IP 127 0 0 1
+  , entryUser = User "peter"
   , entryTime = theTime
-  , entryRequest = "GET /sample-image.png HTTP/2"
+  , entryReq  = "GET /sample-image.png HTTP/2"
   }
 
-tinyFilePath = "etc/tiny.log"
+testTinyLog :: Test
+testTinyLog = TestCase $ do
+  let res = eitherResult $ parse logParser "etc/tiny.log"
+  case res of
+    (Left e)  -> assertFailure $ "Parse failed: " ++ show e
+    (Right r) -> assertEqual "Is what it is" r [entry]
 
-testTinyLog = testCase "Simple Log Parser tiny test" url $ do
-    res <- parseOnly logFileParser tinyFilePath
-    assert "Is what it is" $ res == entry
+tests :: Test
+tests = TestList [TestLabel "Test tiny.log" testTinyLog]
 
-tests = testGroup "tests" [testTinyLog]
-
-main = defaultMain tests
-
-
--- put this in a test
--- print $ parseOnly logEntryParser "127.0.0.1 peter [09/02/2018:10:34:12] \"GET /sample-image.png HTTP/2\"" 
+main :: IO ()
+main = do _ <- runTestTT tests
+          return ()
 
