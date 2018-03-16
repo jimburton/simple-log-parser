@@ -1,6 +1,6 @@
 # simple-log-parser
 
-A demo of using AttoParsec to parse Apache access logs. Logs are
+A demo of using AttoParsec to parse access logs from a web server. Logs are
 expected to be in the following format:
 
     %h %u %t \"%r\"
