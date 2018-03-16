@@ -24,11 +24,12 @@ Usual rigmarole:
     $ git clone https://github.com/jimburton/simple-log-parser
 	$ cd simple-log-parser
 	$ cabal sandbox init
-	$ cabal configure
-	$ cabal install --enable-dependencies
+	$ cabal configure --enable-tests
+	$ cabal install
 	$ cabal test
 	
-The main method expects one argument which is the path to a log file:
+As well as running the tests, you can run the executable itself using `cabal run`. The main method expects one argument 
+which is the path to a log file. `cabal` sends everything after a double hyphen as an argument to the executable:
 
     $ cabal run -- etc/tiny.log
 	Running slp...
