@@ -28,7 +28,7 @@ Usual rigmarole:
 	$ cabal install
 	$ cabal test
 	
-As well as running the tests, you can run the executable itself using `cabal run`. The main method expects one argument 
+As well as running the tests, you can run the executable itself using `cabal run`. The `main` function expects one argument, 
 which is the path to a log file. `cabal` sends everything after a double hyphen as an argument to the executable:
 
     $ cabal run -- etc/tiny.log
