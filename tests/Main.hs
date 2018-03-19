@@ -26,7 +26,7 @@ testTinyLog = TestCase $ do
 
 testLog :: Test
 testLog = TestCase $ do
-  res <- parseFromFile "etc/tiny.log"
+  res <- parseFromFile "etc/access.log"
   assertEqual "I can't believe I ate the whole thing'" 1546 (length res)
 
 tests :: Test
