@@ -8,8 +8,8 @@ Logs are expected to be in the following format:
 
 Yielding log entries that look like this:
 
-    127.0.0.1 peter [09/02/2018:10:34:12] \"GET /sample-image.png HTTP/2\"" 
-	55.0.123.1 - [09/02/2018:12:34:12] \"POST /index.php?key=value HTTP/1.1\"" 
+    127.0.0.1 peter [09/02/2018:10:34:12] \"GET /sample-image.png HTTP/2\" 
+	55.0.123.1 - [09/02/2018:12:34:12] \"POST /index.php?key=value HTTP/1.1\"
 
 The elements of a log entry:
 
