@@ -18,7 +18,7 @@ entry = LogEntry {
   , entryUser   = User "peter" 
   , entryTime   = theTime
   , entryReq    = "GET /sample-image.png HTTP/2"
-  , entryStatus = Status 200
+  , entryStatus = Status 200 
   , entrySize   = ResponseSize 123456
   }
   
@@ -31,7 +31,7 @@ testLog :: Test
 testLog = TestCase $ do
   res <- parseFromFile "etc/access.log"
   print res
-  assertEqual "I can't believe I ate the whole thing'" 1546 (length res)
+  assertEqual "I can't believe I ate the whole thing'" 27 (length res)
 
 tests :: Test
 tests = TestList [TestLabel "Test tiny.log" testTinyLog

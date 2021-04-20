@@ -31,10 +31,11 @@ executable slp
 
 Test-Suite test-slp
   Type:                exitcode-stdio-1.0
-  Main-is:             Main.hs
+  main-is:             Main.hs
+  other-modules:       SLP
   other-extensions:    OverloadedStrings
   hs-source-dirs:      tests, src
-  Ghc-Options:         -Wall
+  ghc-options:         -Wall
   Build-depends:       base
                      , HUnit
                      , attoparsec
