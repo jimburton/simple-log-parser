@@ -52,8 +52,7 @@ parseIP = do
   char '.'
   d3 <- decimal
   char '.'
-  d4 <- decimal
-  return $ IP d1 d2 d3 d4
+  IP d1 d2 d3 <$> decimal
 
 -- | Parser of values of type `UserEntry'.
 parseUser :: Parser UserEntry
@@ -83,7 +82,7 @@ parseTime = do
               , localTimeOfDay = TimeOfDay (read h) (read m) (read s)
                 }
     where monthIndex :: String -> Int
-          monthIndex str = 1 + (fromEnum ((read str)::Month))
+          monthIndex str = 1 + fromEnum (read str ::Month)
 
 
 -- | Parser of values of type 'Request'.
@@ -103,8 +102,7 @@ logEntryParser = do
   char ' '
   t <- parseTime
   char ' '
-  r <- parseRequest
-  return $ LogEntry i u t r 
+  LogEntry i u t <$> parseRequest 
 
 -- | Parser of an entire log.
 logParser :: Parser Log
