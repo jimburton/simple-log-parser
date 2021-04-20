@@ -29,14 +29,14 @@ executable slp
 --  Ghc-Options:         -Wall
   default-language:    Haskell2010
 
-Test-Suite test-slp
-  Type:                exitcode-stdio-1.0
-  Main-is:             Main.hs
+test-suite test-slp
+  type:                exitcode-stdio-1.0
+  main-is:             Main.hs
   other-modules:       SLP      
   other-extensions:    OverloadedStrings
   hs-source-dirs:      tests, src
-  Ghc-Options:         -Wall
-  Build-depends:       base
+  ghc-options:         -Wall
+  build-depends:       base
                      , HUnit
                      , attoparsec
                      , bytestring
